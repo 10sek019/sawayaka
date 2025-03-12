@@ -7,7 +7,7 @@ from matplotlib import rcParams
 url: str = "https://ioossmpojhpcevysvgcl.supabase.co"
 key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlvb3NzbXBvamhwY2V2eXN2Z2NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAzNTczMjksImV4cCI6MjA1NTkzMzMyOX0.8QnKrqGgiZ3dLoYNqamb6u4QdhDDD9oe-QlsB77lqy8"
 supabase: Client = create_client(url, key)
-response = supabase.table("wait_data").select("*").neq("time", -1).limit(20000).execute()
+response = supabase.table("wait_data").select("*").neq("time", -1).limit(50000).execute()
 rcParams['font.family'] = 'MS Gothic'
 
 df = pd.DataFrame(response.data)
@@ -17,14 +17,18 @@ df["date"] = df["saved_at"].dt.date  # 日付を新しい列に保存
 df["weekday"] = df["saved_at"].dt.day_name()  # 曜日を新しい列に保存
 
 # Streamlit UIの作成
-st.title('インタラクティブなデータフィルタリングとプロット')
+st.title('炭焼きレストランさわやか 待ち時間')
 st.sidebar.header('フィルタ設定')
 
-# 日にち選択（曜日ではなく日にちを選択）
-selected_date = st.sidebar.selectbox('日にちを選択してください:', df['date'].unique())
+
+# 今日の日付を取得
+today_date = pd.Timestamp.today().date()
+
+# 日にち選択（デフォルトを今日に設定）
+selected_date = st.sidebar.selectbox('日にちを選択してください:', df['date'].unique(), index=list(df['date'].unique()).index(today_date) if today_date in df['date'].unique() else 0)
 
 # 複数の場所選択
-selected_places = st.sidebar.multiselect('場所を選択してください:', df['place'].unique(), default=df['place'].unique())
+selected_places = st.sidebar.multiselect('場所を選択してください:', df['place'].unique(), default=[df['place'].unique()[0]])
 
 # 時間範囲選択
 start_time = st.sidebar.slider('開始時間を選択してください:', 0, 23, 0, 1)
