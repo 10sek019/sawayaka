@@ -2,3 +2,4 @@ streamlit
 pandas
 matplotlib
 supabase
+japanize_matplotlib 
