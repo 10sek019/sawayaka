@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 import streamlit as st
 from supabase import create_client, Client
 from matplotlib import rcParams
-import japanize_matplotlib
 
 url: str = "https://ioossmpojhpcevysvgcl.supabase.co"
 key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlvb3NzbXBvamhwY2V2eXN2Z2NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAzNTczMjksImV4cCI6MjA1NTkzMzMyOX0.8QnKrqGgiZ3dLoYNqamb6u4QdhDDD9oe-QlsB77lqy8"
 supabase: Client = create_client(url, key)
 response = supabase.table("wait_data").select("*").neq("time", -1).limit(50000).execute()
 rcParams['font.family'] = 'MS Gothic'
+
 
 
 df = pd.DataFrame(response.data)
